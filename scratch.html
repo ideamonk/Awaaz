@@ -2,17 +2,49 @@
 <html lang="en" class="no-js"> 
 <head> 
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/> 
-  <title>Awaaz - add voice to your text</title>
+  <title>Just another html5 experiment</title>
 
-  <script type="text/javascript" src="http://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="libs/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" src="libs/audio-hover-0.1.min.js"></script>
   <script type="text/javascript">
-    google.load("jquery", "1.4.2");
-    google.setOnLoadCallback(function() {
-    });
+    $(document).ready(
+      function() {
+        // checkup browser caps
+        var soundcheck = document.createElement('audio');
+        if (soundcheck.canPlayType) {
+          var canPlayMp3 = !!soundcheck.canPlayType && "" != soundcheck.canPlayType('audio/mpeg');
+          if (!canPlayMp3){
+            $(".error").html("Oops! your browser doesn't support mp3 playback yet.").fadeIn("slow");
+            return;
+          }
+        }
+        // lets build a from PoC to generalized, reusable code
+        var words = $("#awaazified").html().split(", ");
+        var messy = ""; var sound;
+        for (i=0; i<words.length; i++) {
+          if ("ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(words[i][0])!=-1)
+            sound = "!" + words[i].replace(" ", "_!");
+          else
+            sound = words[i];
+          messy += "<span class=\"awaazchunk ['http://www.gstatic.com/dictionary/static/sounds/de/0/" + sound + ".mp3']\">"+words[i]+" </span>";
+        }
+        $("#awaazified").html(messy);
+        _audiohover.setup("awaazchunk");
+      }
+    );
   </script>
+  <style type="text/css">
+    .awaazchunk:hover{
+      background:#ffff00;
+    }
+    .awaazchunk { margin:5px; padding:5px 10px; background:#ddd; border-radius:5px; display:inline-block;}
+    .footer { margin-top:200px; bottom:0px; text-align:center; }
+    .error { background:#faefef; font-size:0.7em; color:red; padding:5px 20px; display:inline-block; display:none; }
+  </style>
 </head>
 <body>
-  <p id="awaazified">
-    The quick brown fox jumps over the lazy dog is an English language pangram a phrase that contains all of the letters of the alphabet
-  </p>
+  <small> <a href="http://github.com/ideamonk/awaaz">source</a></small>
+  <h3> Hover these words (list of commonly occuring nouns) <span class='error'></span></h3>
+  <p id="awaazified">apple, baby, back, ball, bear, bed, bell, bird, birthday, boat, box, boy, bread, brother, cake, car, cat, chair, chicken, children, Christmas, coat, corn, cow, day, dog, doll, door, duck, egg, eye, farm, farmer, father, feet, fire, fish, floor, flower, game, garden, girl, good-bye, grass, ground, hand, head, hill, home, horse, house, kitty, leg, letter, man, men, milk, money, morning, mother, name, nest, night, paper, party, picture, pig, rabbit, rain, ring, robin, Santa Claus, school, seed, sheep, shoe, sister, snow, song, squirrel, stick, street, sun, table, thing, time, top, toy, tree, watch, water, way, wind, window, wood</p>
+  <p class='footer'> by <a href="http://github.com/ideamonk">ideamonk</a> </p>
 </body>
